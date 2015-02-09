@@ -1,0 +1,46 @@
+TrigSample
+==========
+
+Version 1.0
+
+Doubles a signal with another, in a separate WAV file
+
+Copyright (C) Jean Zundel <jzu@free.fr> 2015
+
+`trigsample` is a small C program which generates a WAV file populated with
+copies of a sample whose presence is triggered by the signal level in an input
+WAV file, thus "doubling" the signal. 
+
+FWIW, it is licensed under the GNU GPL v3.
+
+COMPILATION
+-----------
+
+`gcc -Wall -o trigsample trigsample.c`
+
+No dependencies whatsoever.
+
+RUNNING
+-------
+
+`Usage: trigsample input sample output threshold`
+
+`input`, `sample` and `output` are mono s16le WAV files. `input` and `sample` should
+share the same sample rate. `output` will share the exact same size and samplerate as
+`input`. 
+
+`threshold` should be a positive short integer value (from 0 to 32767). Any input 
+signal above the given value will trigger a copy of the sample signal in the output
+file at this position. Detection will resume 500 samples later to go past the 
+trigger signal.
+
+The level of sample copies in the output file depends on the level of the signal 
+detected in the input file.
+
+BUGS
+----
+
+The program is error-prone since few effective checks are made.
+
+Stereo files give "interesting" results.
+
