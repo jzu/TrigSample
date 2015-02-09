@@ -37,10 +37,12 @@ trigger signal.
 The level of sample copies in the output file depends on the level of the signal 
 detected in the input file.
 
+While running, the program prints one dot on screen each time a sample is copied to
+output. This permits a crude adjustment of the `threshold` argument. 
+
 BUGS
 ----
 
-The program is error-prone since few effective checks are made.
-
-Stereo files give "interesting" results.
+The program is error-prone since few effective checks are made. Stereo files
+give "interesting" results, as well as non-audio files.
 
