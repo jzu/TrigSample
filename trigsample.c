@@ -12,10 +12,10 @@ int main (int argc, char **argv) {
               smpstat;
   int i, 
       j,
-      max;
-  int insize,
-      smpsize;
-  int fin,
+      max,
+      insize,
+      smpsize,
+      fin,
       fsmp,
       fout;
   short *bin,
@@ -45,6 +45,8 @@ int main (int argc, char **argv) {
     return 2;
   }
 
+  // Use the size of input and sample files to malloc buffers
+
   insize = instat.st_size;
   smpsize = smpstat.st_size;
 
@@ -61,6 +63,8 @@ int main (int argc, char **argv) {
   }
   read (fin, bin, insize);
   read (fsmp, bsmp, smpsize);
+
+  // Various checks
 
   if ((memcmp (riff, bin,   4) != 0) || 
       (memcmp (wave, bin+4, 4) != 0) ||
@@ -83,16 +87,25 @@ int main (int argc, char **argv) {
     return 5;
   }
 
+  // Make an empty WAV structure
 
   memset (bout, 0, insize);
   memcpy (bout, bin, 44);                      // WAV header
+
+  // If we get a powerful enough signal
+  // Find the maximum amplitude of that signal
+  // Copy the sample 
+  // Adjust the copy wrt the original signal amplitude
+  // Print a dot
 
   i = 22;
   while (i < (insize - smpsize - 22) / 2) { 
     if (bin [i] > threshold) {
       max = 0;
       for (j = i; j < i+500; j++)
-        max = (bin [j] > max) ? bin [j] : max;
+        max = (abs (bin [j]) > max) 
+              ? abs (bin [j]) 
+              : max;
       memcpy (bout+i, bsmp + 22, smpsize - 44);
       for (j = i; j < i + (smpsize - 22) / 2; j++)
         bout [j] = (short) (((int) bout [j] * max) / 32768);
