@@ -43,6 +43,4 @@ output. This permits a crude adjustment of the `threshold` argument.
 BUGS
 ----
 
-The program is error-prone since few effective checks are made. Stereo files
-give "interesting" results, as well as non-audio files.
-
+There's always one more bug.

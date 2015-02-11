@@ -21,8 +21,10 @@ int main (int argc, char **argv) {
   short *bin,
         *bsmp,
         *bout;
-
   short threshold;
+
+  char *riff = "RIFF";
+  char *wave = "WAVE";
 
   if (argc != 5) {
     printf ("Usage: %s input sample output threshold\n", argv [0]);
@@ -60,17 +62,39 @@ int main (int argc, char **argv) {
   read (fin, bin, insize);
   read (fsmp, bsmp, smpsize);
 
+  if ((memcmp (riff, bin,   4) != 0) || 
+      (memcmp (wave, bin+4, 4) != 0) ||
+      (bin [10] != 1)) {
+    printf ("Not a mono WAV: %s\n", argv [1]);
+    return 4;
+  }
+
+  if ((memcmp (riff, bsmp,  4) != 0) || 
+      (memcmp (wave, bin+4, 4) != 0) ||
+      (bsmp [10] != 1)) {
+    printf ("Not a mono WAV: %s\n", argv [2]);
+    return 4;
+  }
+
+  if (memcmp (bin+10, bsmp+10, 16) != 0) {
+    printf ("%s and %s should share the same characteristics\n", 
+            argv [0], 
+            argv [1]);
+    return 5;
+  }
+
+
   memset (bout, 0, insize);
   memcpy (bout, bin, 44);                      // WAV header
 
-  i = 44;
-  while (i < (insize - smpsize - 44) / 2) { 
+  i = 22;
+  while (i < (insize - smpsize - 22) / 2) { 
     if (bin [i] > threshold) {
       max = 0;
       for (j = i; j < i+500; j++)
         max = (bin [j] > max) ? bin [j] : max;
-      memcpy (bout+i, bsmp + 44, smpsize - 44);
-      for (j = i; j < i + (smpsize - 44) / 2; j++)
+      memcpy (bout+i, bsmp + 22, smpsize - 44);
+      for (j = i; j < i + (smpsize - 22) / 2; j++)
         bout [j] = (short) (((int) bout [j] * max) / 32768);
       printf (".");
       i += 500;
@@ -78,9 +102,9 @@ int main (int argc, char **argv) {
     i++;
 }
 
-  write (fout, bout, insize);
-
   printf ("\n");
+
+  write (fout, bout, insize);
 
   close (fout);
   close (fsmp);
