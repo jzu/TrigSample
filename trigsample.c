@@ -59,7 +59,7 @@ int main (int argc, char **argv) {
     printf ("Error: stat %s\n", argv [1]);
     return 2;
   }
-  if ((stat ("sample.wav", &smpstat)) < 0) {    
+  if ((stat (argv [2], &smpstat)) < 0) {    
     printf ("Error: stat %s\n", argv [2]);
     return 2;
   }
